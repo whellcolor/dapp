@@ -114,6 +114,16 @@ export default function AgaraWidgets() {
     </div>
   );
 }
+import { TokenProvider, TokenName } from "thirdweb/react";
+
+<TokenProvider
+  address="0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88"
+  client={client}
+  chain={ethereum}
+>
+  <TokenName />
+</TokenProvider>
+    
 
 import { ThirdwebProvider } from "thirdweb/react";
 import { agaraClient } from "./agaraClient";
