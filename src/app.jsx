@@ -132,3 +132,28 @@ import { agaraClient } from "./agaraClient";
   <App />
 </ThirdwebProvider>
 
+import { ConnectButton } from "thirdweb/react";
+import { client } from "./client";
+
+import NFTGallery from "./components/NFTGallery";
+import MintNFT from "./components/MintNFT";
+
+export default function App() {
+  return (
+    <div className="min-h-screen p-10">
+
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-bold">
+          Agara NFT Marketplace
+        </h1>
+
+        <ConnectButton client={client} />
+      </div>
+
+      <MintNFT />
+
+      <NFTGallery />
+    </div>
+  );
+}
+        
