@@ -31,7 +31,62 @@
 
   <img id="nft" />
 
-</div>
+</div><script type="module">
+import { createConfig, http } from 'https://esm.sh/wagmi'
+import { mainnet, bsc, polygon } from 'https://esm.sh/wagmi/chains'
+import {
+  injected,
+  walletConnect,
+  coinbaseWallet,
+} from 'https://esm.sh/wagmi/connectors'
+
+const config = createConfig({
+  chains: [mainnet, bsc, polygon],
+  transports: {
+    [mainnet.id]: http(),
+    [bsc.id]: http(),
+    [polygon.id]: http(),
+  },
+
+  connectors: [
+    injected({
+      shimDisconnect: true,
+    }),
+
+    walletConnect({
+      projectId: 'ISI_PROJECT_ID',
+      showQrModal: true,
+    }),
+
+    coinbaseWallet({
+      appName: 'My Dapp',
+    }),
+  ],
+})
+
+async function connectWallet() {
+  try {
+    const connector = config.connectors[0]
+    const result = await connector.connect()
+
+    console.log('Connected:', result.accounts[0])
+
+    localStorage.setItem(
+      'wallet',
+      result.accounts[0]
+    )
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+window.connectWallet = connectWallet
+</script>
+
+<button onclick="connectWallet()">
+  Connect Wallet
+</button>
 
 <script>
 let signer, contract;
