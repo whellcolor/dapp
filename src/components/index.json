@@ -1,0 +1,11 @@
+{
+  "name": "Agara NFT #1",
+  "description": "NFT Marketplace Demo",
+  "image": "ipfs://QmHash/image.png",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    }
+  ]
+}
