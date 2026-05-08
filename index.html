@@ -391,5 +391,373 @@ https://blockchain.googleapis.com/v1/projects/cogent-density-472314-r7/locations
     }
   </script>
 
+<!-- ========================= -->
+<!-- THIRDWEB WIDGETS -->
+<!-- ========================= -->
+
+<script type="module">
+
+import {
+  BridgeWidget,
+  CheckoutWidget,
+  SwapWidget,
+  TransactionWidget,
+} from "https://esm.sh/thirdweb/react";
+
+import {
+  createThirdwebClient,
+  prepareTransaction,
+  toUnits,
+} from "https://esm.sh/thirdweb";
+
+import {
+  ethereum,
+  arbitrum,
+} from "https://esm.sh/thirdweb/chains";
+
+import React from "https://esm.sh/react";
+import ReactDOM from "https://esm.sh/react-dom/client";
+
+
+// =========================
+// THIRDWEB CLIENT
+// =========================
+
+const client = createThirdwebClient({
+  clientId: "YOUR_THIRDWEB_CLIENT_ID",
+});
+
+// =========================
+// APP
+// =========================
+
+function WidgetsApp() {
+
+  return React.createElement(
+    "div",
+    {
+      style: {
+        display: "grid",
+        gap: "20px",
+        marginTop: "30px",
+      },
+    },
+
+    // =========================
+    // BRIDGE WIDGET SIMPLE
+    // =========================
+
+    React.createElement(BridgeWidget, {
+      client: client,
+      currency: "USD",
+      theme: "dark",
+    }),
+
+    // =========================
+    // BRIDGE WIDGET ADVANCED
+    // =========================
+
+    React.createElement(BridgeWidget, {
+      client: client,
+
+      swap: {
+        prefill: {
+          buyToken: {
+            chainId: 8453,
+            tokenAddress:
+              "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+          },
+
+          sellToken: {
+            chainId: 137,
+          },
+        },
+      },
+
+      buy: {
+        amount: "100",
+        chainId: 8453,
+        tokenAddress:
+          "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+        buttonLabel: "Buy USDC",
+      },
+    }),
+
+    // =========================
+    // CHECKOUT WIDGET
+    // =========================
+
+    React.createElement(CheckoutWidget, {
+      client: client,
+
+      chain: arbitrum,
+
+      amount: "0.01",
+
+      seller: "0x123...abc",
+
+      supportedTokens: {
+        8453: [
+          {
+            address:
+              "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+
+            name: "USDC",
+            symbol: "USDC",
+          },
+        ],
+      },
+    }),
+
+    // =========================
+    // SWAP WIDGET
+    // =========================
+
+    React.createElement(SwapWidget, {
+      client: client,
+
+      prefill: {
+        buyToken: {
+          chainId: 8453,
+
+          tokenAddress:
+            "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+        },
+
+        sellToken: {
+          chainId: 137,
+        },
+      },
+    }),
+
+    // =========================
+    // TRANSACTION WIDGET SIMPLE
+    // =========================
+
+    React.createElement(TransactionWidget, {
+      client: client,
+
+      transaction: prepareTransaction({
+        to: "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+
+        chain: ethereum,
+
+        client: client,
+      }),
+
+      amount: "0.1",
+    }),
+
+    // =========================
+    // TRANSACTION WIDGET ADVANCED
+    // =========================
+
+    React.createElement(TransactionWidget, {
+      client: client,
+
+      transaction: prepareTransaction({
+        to: "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+
+        chain: ethereum,
+
+        client: client,
+
+        value: toUnits("0.001", 18),
+      }),
+
+      connectOptions: {
+        connectModal: {
+          size: "compact",
+          title: "Sign in",
+        },
+      },
+    })
+  );
+}
+
+
+// =========================
+// RENDER
+// =========================
+
+const rootDiv = document.createElement("div");
+
+rootDiv.id = "thirdweb-widgets";
+
+document.body.appendChild(rootDiv);
+
+const root = ReactDOM.createRoot(rootDiv);
+
+root.render(
+  React.createElement(WidgetsApp)
+);
+
+</script>
+
+<!-- ========================= -->
+<!-- THIRDWEB CONNECT BUTTON -->
+<!-- ========================= -->
+
+<div id="connect-wallet"></div>
+
+<script type="module">
+
+import React from "https://esm.sh/react";
+import ReactDOM from "https://esm.sh/react-dom/client";
+
+import {
+  ConnectButton,
+} from "https://esm.sh/thirdweb/react";
+
+import {
+  createThirdwebClient,
+} from "https://esm.sh/thirdweb";
+
+import {
+  inAppWallet,
+  createWallet,
+} from "https://esm.sh/thirdweb/wallets";
+
+
+// =========================
+// THIRDWEB CLIENT
+// =========================
+
+const client = createThirdwebClient({
+  clientId: "YOUR_THIRDWEB_CLIENT_ID",
+});
+
+
+// =========================
+// WALLET LIST
+// =========================
+
+const wallets = [
+
+  inAppWallet({
+    auth: {
+      options: [
+        "google",
+        "discord",
+        "telegram",
+        "farcaster",
+        "email",
+        "x",
+        "passkey",
+        "phone",
+        "github",
+        "tiktok",
+      ],
+    },
+  }),
+
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+  createWallet("me.rainbow"),
+  createWallet("io.rabby"),
+  createWallet("io.zerion.wallet"),
+  createWallet("com.binance.wallet"),
+  createWallet("com.bitpay"),
+  createWallet("com.trustwallet.app"),
+  createWallet("com.bestwallet"),
+  createWallet("com.fireblocks"),
+  createWallet("com.bitget.web3"),
+  createWallet("com.safepal"),
+  createWallet("pro.tokenpocket"),
+  createWallet("org.uniswap"),
+  createWallet("com.crypto.wallet"),
+  createWallet("com.elrond.maiar.wallet"),
+  createWallet("com.bitcoin"),
+  createWallet("com.bifrostwallet"),
+  createWallet("com.bybit"),
+  createWallet("com.blockchain.login"),
+  createWallet("io.trezor"),
+  createWallet("global.safe"),
+  createWallet("com.okex.wallet"),
+  createWallet("id.co.pintu"),
+  createWallet("com.hashpack.wallet"),
+  createWallet("network.blackfort"),
+  createWallet("org.hot-labs"),
+  createWallet("ag.jup"),
+  createWallet("com.kucoin"),
+  createWallet("com.gemwallet"),
+  createWallet("io.enjin"),
+  createWallet("com.oasys-wallet"),
+  createWallet("ai.purewallet"),
+  createWallet("com.fastex.wallet"),
+  createWallet("my.mone"),
+  createWallet("com.abra"),
+  createWallet("io.dttd"),
+  createWallet("net.gateweb3"),
+  createWallet("io.wallet3"),
+  createWallet("io.trustasset"),
+  createWallet("org.rezor"),
+  createWallet("com.thirdweb"),
+  createWallet("network.trustkeys"),
+  createWallet("io.streakk"),
+  createWallet("com.reown"),
+  createWallet("com.walletconnect"),
+  createWallet("com.bitnovo"),
+  createWallet("app.phantom"),
+  createWallet("com.brave.wallet"),
+  createWallet("smart"),
+  createWallet("inApp"),
+  createWallet("walletConnect"),
+];
+
+
+// =========================
+// APP COMPONENT
+// =========================
+
+function Example() {
+
+  return React.createElement(
+    "div",
+    {
+      style: {
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "30px",
+      },
+    },
+
+    React.createElement(
+      ConnectButton,
+      {
+        client: client,
+
+        wallets: wallets,
+
+        connectModal: {
+          size: "compact",
+        },
+
+        theme: "dark",
+      }
+    )
+  );
+}
+
+
+// =========================
+// RENDER
+// =========================
+
+const root =
+  ReactDOM.createRoot(
+    document.getElementById(
+      "connect-wallet"
+    )
+  );
+
+root.render(
+  React.createElement(Example)
+);
+
+</script>
+  
+  
+
 </body>
 </html>
