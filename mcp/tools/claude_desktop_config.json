@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "web3-wallet": {
+      "command": "node",
+      "args": [
+        "/FULL_PATH_PROJECT/mcp/server.js"
+      ]
+    }
+  }
+}
