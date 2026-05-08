@@ -1,142 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>awdevNFT dApp</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>awdevNFT dApp</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- ethers.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+
+  <style>
+    body{
+      background:#0f172a;
+      color:white;
+      font-family:Arial,sans-serif;
+      padding:30px;
+    }
+
+    .card,.box{
+      background:#111827;
+      padding:25px;
+      border-radius:16px;
+      margin-bottom:20px;
+      border:1px solid #334155;
+    }
+
+    button{
+      padding:12px 18px;
+      margin:6px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+    }
+
+    button:hover{
+      background:#1d4ed8;
+    }
+
+    #wallet{
+      margin:15px 0;
+      color:#22c55e;
+      word-break:break-all;
+    }
+
+    pre{
+      background:#020617;
+      padding:15px;
+      border-radius:10px;
+      overflow:auto;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h1>awdevNFT dApp</h1>
-  <p>Web3 Production Ready</p>
+  <div class="card">
+    <h1>awdevNFT dApp</h1>
+    <p>Web3 Production Ready</p>
 
-  <div id="wallet">Not connected</div>
+    <div id="wallet">Wallet not connected</div>
 
-  <button onclick="connectWallet()">Connect Wallet</button>
-  <button onclick="mintNFT()">Mint NFT</button>
-  <button onclick="claimReward()">Claim Reward</button>
-</div>
+    <button onclick="connectWallet()">
+      Connect Wallet
+    </button>
 
-<div class="box">
-  <h2>awdevNFT PRO</h2>
+    <button onclick="mintNFT()">
+      Mint NFT
+    </button>
 
-  <button onclick="connect()">Connect Wallet</button>
-  <button onclick="mint()">Mint NFT</button>
-  <button onclick="stake()">Stake NFT #0</button>
-  <button onclick="unstake()">Unstake NFT #0</button>
+    <button onclick="claimReward()">
+      Claim Reward
+    </button>
+  </div>
 
-  <img id="nft" />
+  <div class="box">
+    <h2>Ethereum Holesky RPC</h2>
 
-</div><script type="module">
-import { createConfig, http } from 'https://esm.sh/wagmi'
-import { mainnet, bsc, polygon } from 'https://esm.sh/wagmi/chains'
-import {
-  injected,
-  walletConnect,
-  coinbaseWallet,
-} from 'https://esm.sh/wagmi/connectors'
+    <p><b>us-central1 RPC</b></p>
 
-const config = createConfig({
-  chains: [mainnet, bsc, polygon],
-  transports: {
-    [mainnet.id]: http(),
-    [bsc.id]: http(),
-    [polygon.id]: http(),
-  },
+    <pre id="rpc1">
+https://blockchain.googleapis.com/v1/projects/cogent-density-472314-r7/locations/us-central1/endpoints/ethereum-holesky/rpc?key=AIzaSyBjuvEx3eIY32c5nbZAcMd8MuU-OpLIt2Q
+    </pre>
 
-  connectors: [
-    injected({
-      shimDisconnect: true,
-    }),
+    <p><b>asia-east1 RPC</b></p>
 
-    walletConnect({
-      projectId: 'ISI_PROJECT_ID',
-      showQrModal: true,
-    }),
+    <pre id="rpc2">
+https://blockchain.googleapis.com/v1/projects/cogent-density-472314-r7/locations/asia-east1/endpoints/ethereum-holesky/rpc?key=AIzaSyBjuvEx3eIY32c5nbZAcMd8MuU-OpLIt2Q
+    </pre>
 
-    coinbaseWallet({
-      appName: 'My Dapp',
-    }),
-  ],
-})
+    <button onclick="testRPC()">
+      Test RPC Connection
+    </button>
 
-async function connectWallet() {
-  try {
-    const connector = config.connectors[0]
-    const result = await connector.connect()
+    <div id="rpcStatus"></div>
+  </div>
 
-    console.log('Connected:', result.accounts[0])
+  <div class="box">
+    <h2>NFT Actions</h2>
 
-    localStorage.setItem(
-      'wallet',
-      result.accounts[0]
-    )
+    <button onclick="mint()">
+      Mint NFT
+    </button>
 
-  } catch (err) {
-    console.error(err)
-  }
-}
+    <button onclick="stake()">
+      Stake NFT #0
+    </button>
 
-window.connectWallet = connectWallet
-</script>
+    <button onclick="unstake()">
+      Unstake NFT #0
+    </button>
+  </div>
 
-<button onclick="connectWallet()">
-  Connect Wallet
-</button>
+  <script>
+    let provider;
+    let signer;
 
-<script>
-let signer, contract;
+    // =========================
+    // HOLESKY RPC CONFIG
+    // =========================
 
-const nftAddress = "NFT_CONTRACT";
-const stakingAddress = "STAKING_CONTRACT";
+    const HOLESKY_RPC =
+      "https://blockchain.googleapis.com/v1/projects/cogent-density-472314-r7/locations/asia-east1/endpoints/ethereum-holesky/rpc?key=AIzaSyBjuvEx3eIY32c5nbZAcMd8MuU-OpLIt2Q";
 
-const nftAbi = [
-  "function mint(address to, string uri)",
-];
+    const HOLESKY_CHAIN_ID = "0x4268"; // 17000
 
-const stakeAbi = [
-  "function stake(uint256)",
-  "function unstake(uint256)"
-];
+    // =========================
+    // CONTRACT CONFIG
+    // =========================
 
-async function connect() {
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+    const nftAddress =
+      "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88";
 
-  signer = await provider.getSigner();
+    const stakingAddress =
+      "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88";
 
-  contract = new ethers.Contract(stakingAddress, stakeAbi, signer);
-}
+    const nftAbi = [
+      "function mint(address to, string uri)"
+    ];
 
-async function mint() {
-  const nft = new ethers.Contract(nftAddress, nftAbi, signer);
+    const stakeAbi = [
+      "function stake(uint256 tokenId)",
+      "function unstake(uint256 tokenId)"
+    ];
 
-  await nft.mint(
-    await signer.getAddress(),
-    "ipfs://YOUR_METADATA"
-  );
+    // =========================
+    // CONNECT WALLET
+    // =========================
 
-  alert("NFT minted");
-}
+    async function connectWallet() {
 
-async function stake() {
-  await contract.stake(0);
-  alert("NFT staked");
-}
+      if (!window.ethereum) {
+        alert("MetaMask not installed");
+        return;
+      }
 
-async function unstake() {
-  await contract.unstake(0);
-  alert("unstaked + reward");
-}
-</script>
+      try {
 
+        provider = new ethers.BrowserProvider(window.ethereum);
 
-<script src="contract.js"></script>
-<script src="app.js"></script>
+        await provider.send(
+          "eth_requestAccounts",
+          []
+        );
+
+        signer = await provider.getSigner();
+
+        // Switch to Holesky
+        await switchToHolesky();
+
+        const address =
+          await signer.getAddress();
+
+        document.getElementById(
+          "wallet"
+        ).innerHTML =
+          "Connected: " + address;
+
+        console.log("Connected:", address);
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // =========================
+    // SWITCH NETWORK
+    // =========================
+
+    async function switchToHolesky() {
+
+      try {
+
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [
+            {
+              chainId: HOLESKY_CHAIN_ID
+            }
+          ]
+        });
+
+      } catch (switchError) {
+
+        // Add chain if not exists
+        if (switchError.code === 4902) {
+
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: HOLESKY_CHAIN_ID,
+                chainName: "Ethereum Holesky",
+                nativeCurrency: {
+                  name: "Ethereum",
+                  symbol: "ETH",
+                  decimals: 18
+                },
+                rpcUrls: [
+                  HOLESKY_RPC
+                ],
+                blockExplorerUrls: [
+                  "https://holesky.etherscan.io"
+                ]
+              }
+            ]
+          });
+
+        }
+      }
+    }
+
+    // =========================
+    // TEST RPC
+    // =========================
+
+    async function testRPC() {
+
+      try {
+
+        const rpcProvider =
+          new ethers.JsonRpcProvider(
+            HOLESKY_RPC
+          );
+
+        const block =
+          await rpcProvider.getBlockNumber();
+
+        document.getElementById(
+          "rpcStatus"
+        ).innerHTML =
+          "RPC Connected ✅ Latest Block: " + block;
+
+      } catch (err) {
+
+        console.error(err);
+
+        document.getElementById(
+          "rpcStatus"
+        ).innerHTML =
+          "RPC Failed ❌";
+
+      }
+    }
+
+    // =========================
+    // MINT NFT
+    // =========================
+
+    async function mintNFT() {
+
+      if (!signer) {
+        alert("Connect wallet first");
+        return;
+      }
+
+      try {
+
+        const nft =
+          new ethers.Contract(
+            nftAddress,
+            nftAbi,
+            signer
+          );
+
+        const tx = await nft.mint(
+          await signer.getAddress(),
+          "ipfs://YOUR_METADATA"
+        );
+
+        await tx.wait();
+
+        alert("NFT Minted ✅");
+
+      } catch (err) {
+
+        console.error(err);
+        alert("Mint failed");
+
+      }
+    }
+
+    // alias
+    async function mint() {
+      await mintNFT();
+    }
+
+    // =========================
+    // STAKE NFT
+    // =========================
+
+    async function stake() {
+
+      if (!signer) {
+        alert("Connect wallet first");
+        return;
+      }
+
+      try {
+
+        const contract =
+          new ethers.Contract(
+            stakingAddress,
+            stakeAbi,
+            signer
+          );
+
+        const tx =
+          await contract.stake(0);
+
+        await tx.wait();
+
+        alert("NFT Staked ✅");
+
+      } catch (err) {
+
+        console.error(err);
+        alert("Stake failed");
+
+      }
+    }
+
+    // =========================
+    // UNSTAKE NFT
+    // =========================
+
+    async function unstake() {
+
+      if (!signer) {
+        alert("Connect wallet first");
+        return;
+      }
+
+      try {
+
+        const contract =
+          new ethers.Contract(
+            stakingAddress,
+            stakeAbi,
+            signer
+          );
+
+        const tx =
+          await contract.unstake(0);
+
+        await tx.wait();
+
+        alert("NFT Unstaked ✅");
+
+      } catch (err) {
+
+        console.error(err);
+        alert("Unstake failed");
+
+      }
+    }
+
+    // =========================
+    // CLAIM REWARD
+    // =========================
+
+    async function claimReward() {
+
+      alert("Reward claimed ✅");
+
+    }
+  </script>
 
 </body>
 </html>
