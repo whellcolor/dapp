@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "web3-wallet": {
+      "command": "node",
+      "args": ["mcp/server.js"]
+    }
+  }
+}
