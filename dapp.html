@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PRO Miner DApp</title>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+body{background:#0f172a;color:white;font-family:Arial;padding:20px}
+.card{background:#111827;padding:20px;border-radius:12px;margin:10px 0}
+button{padding:10px 15px;margin:5px;border-radius:8px;background:#2563eb;color:white;border:none}
+</style>
+</head>
+
+<body>
+
+<h1>⛏️ PRO DAPP MINER</h1>
+
+<div class="card">
+Wallet: <div id="wallet">Not Connected</div>
+<button onclick="connectWallet()">Connect Wallet</button>
+</div>
+
+<div class="card">
+Timer: <div id="timer">00:00:00</div>
+<button onclick="startMining()">Start</button>
+<button onclick="stopMining()">Stop</button>
+</div>
+
+<div class="card">
+<button onclick="claimReward()">Claim Reward</button>
+<button onclick="mintNFT()">Mint NFT</button>
+</div>
+
+<script type="module" src="./app.js"></script>
+
+</body>
+</html>
