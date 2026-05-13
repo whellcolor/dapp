@@ -1,0 +1,717 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Advanced Neon Faucet</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial;
+}
+
+body{
+  background:#020617;
+  color:white;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  overflow-x:hidden;
+}
+
+.bg{
+  position:fixed;
+  width:700px;
+  height:700px;
+  background:
+    linear-gradient(
+      45deg,
+      #00f0ff,
+      #8b5cf6,
+      #00f0ff
+    );
+  filter:blur(160px);
+  opacity:.15;
+  animation:spin 12s linear infinite;
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+.card{
+  position:relative;
+  z-index:2;
+  width:460px;
+  background:rgba(15,23,42,.75);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:25px;
+  padding:28px;
+  backdrop-filter:blur(20px);
+
+  box-shadow:
+    0 0 30px rgba(0,255,255,.15),
+    0 0 60px rgba(139,92,246,.15);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+  font-size:30px;
+
+  background:linear-gradient(
+    90deg,
+    #00f0ff,
+    #8b5cf6
+  );
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+input,
+select{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:14px;
+  border:none;
+  outline:none;
+  background:#0f172a;
+  color:white;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+  color:white;
+
+  background:
+    linear-gradient(
+      90deg,
+      #06b6d4,
+      #8b5cf6
+    );
+
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 0 20px #06b6d4,
+    0 0 40px #8b5cf6;
+}
+
+#status{
+  margin-top:15px;
+  padding:14px;
+  border-radius:14px;
+  background:#0f172a;
+  border:1px solid rgba(255,255,255,.08);
+  min-height:70px;
+  line-height:1.6;
+  font-size:14px;
+}
+
+#history{
+  margin-top:20px;
+  max-height:220px;
+  overflow:auto;
+}
+
+.history-item{
+  background:#0f172a;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  border:1px solid rgba(255,255,255,.06);
+  font-size:13px;
+}
+
+.timer{
+  text-align:center;
+  margin-top:12px;
+  color:#38bdf8;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#111827;
+  margin-top:5px;
+  font-size:12px;
+  color:#22d3ee;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="card">
+
+<h1>⚡ Neon Faucet</h1>
+
+<appkit-button></appkit-button>
+
+<input
+  type="text"
+  id="wallet"
+  placeholder="Wallet Address"
+/>
+
+<select id="chain">
+  <option value="84532">
+    Base Sepolia
+  </option>
+
+  <option value="421614">
+    Arbitrum Sepolia
+  </option>
+
+  <option value="11155111">
+    Ethereum Sepolia
+  </option>
+</select>
+
+<button onclick="claimFaucet()">
+  Claim Faucet
+</button>
+
+<div class="timer" id="timer">
+  Ready to claim
+</div>
+
+<div id="status">
+  Waiting...
+</div>
+
+<div id="history"></div>
+
+</div>
+
+<script type="module">
+
+import { createAppKit }
+from "https://esm.sh/@reown/appkit";
+
+import { EthersAdapter }
+from "https://esm.sh/@reown/appkit-adapter-ethers";
+
+import {
+  mainnet,
+  arbitrum,
+  sepolia
+}
+from "https://esm.sh/@reown/appkit/networks";
+
+const modal = createAppKit({
+
+  adapters:[
+    new EthersAdapter()
+  ],
+
+  networks:[
+    mainnet,
+    arbitrum,
+    sepolia
+  ],
+
+  metadata:{
+    name:"Advanced Faucet",
+    description:"Neon Faucet",
+    url:window.location.origin,
+    icons:[
+      "https://avatars.githubusercontent.com/u/179229932"
+    ]
+  },
+
+  projectId:
+  "5022875ce6ee68917f103ff9b1e3422d"
+});
+
+const CLAIM_TIME =
+24 * 60 * 60 * 1000;
+
+const statusBox =
+document.getElementById("status");
+
+const historyBox =
+document.getElementById("history");
+
+const timerBox =
+document.getElementById("timer");
+
+function setStatus(msg){
+  statusBox.innerHTML = msg;
+}
+
+function getClaimKey(wallet){
+  return `claim_${wallet}`;
+}
+
+function updateTimer(wallet){
+
+  const last =
+  localStorage.getItem(
+    getClaimKey(wallet)
+  );
+
+  if(!last){
+
+    timerBox.innerHTML =
+    "✅ Ready to claim";
+
+    return;
+  }
+
+  const diff =
+  CLAIM_TIME -
+  (Date.now() - Number(last));
+
+  if(diff <= 0){
+
+    timerBox.innerHTML =
+    "✅ Ready to claim";
+
+    return;
+  }
+
+  const h =
+  Math.floor(diff / 3600000);
+
+  const m =
+  Math.floor(
+    (diff % 3600000) / 60000
+  );
+
+  const s =
+  Math.floor(
+    (diff % 60000) / 1000
+  );
+
+  timerBox.innerHTML =
+  `⏳ ${h}h ${m}m ${s}s`;
+
+}
+
+setInterval(()=>{
+
+  const wallet =
+  document.getElementById("wallet").value;
+
+  if(wallet){
+    updateTimer(wallet);
+  }
+
+},1000);
+
+function saveHistory(data){
+
+  const old =
+  JSON.parse(
+    localStorage.getItem(
+      "claim_history"
+    ) || "[]"
+  );
+
+  old.unshift(data);
+
+  localStorage.setItem(
+    "claim_history",
+    JSON.stringify(old)
+  );
+
+  renderHistory();
+}
+
+function renderHistory(){
+
+  const items =
+  JSON.parse(
+    localStorage.getItem(
+      "claim_history"
+    ) || "[]"
+  );
+
+  historyBox.innerHTML = "";
+
+  items.forEach(item=>{
+
+    historyBox.innerHTML += `
+      <div class="history-item">
+
+        <div>
+          Wallet:
+          ${item.wallet}
+        </div>
+
+        <div>
+          Chain:
+          ${item.chain}
+        </div>
+
+        <div class="badge">
+          ERC20 + ETH Sent
+        </div>
+
+        <div>
+          ${item.time}
+        </div>
+
+      </div>
+    `;
+  });
+}
+
+renderHistory();
+
+window.claimFaucet = async function(){
+
+  try{
+
+    const wallet =
+    document.getElementById("wallet").value;
+
+    const chainId =
+    document.getElementById("chain").value;
+
+    if(!wallet){
+
+      setStatus(
+        "❌ Wallet required"
+      );
+
+      return;
+    }
+
+    const last =
+    localStorage.getItem(
+      getClaimKey(wallet)
+    );
+
+    if(last){
+
+      if(
+        Date.now() -
+        Number(last)
+        < CLAIM_TIME
+      ){
+
+        setStatus(
+          "⛔ Already claimed today"
+        );
+
+        return;
+      }
+    }
+
+    setStatus(
+      "⚡ Sending ERC20 + ETH..."
+    );
+
+    // AUTO SEND ERC20
+
+    const tokenTx =
+    await fetch(
+      "https://api.thirdweb.com/v1/transactions",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json",
+
+          "x-secret-key":
+          "YOUR_SECRET_KEY"
+        },
+
+        body:JSON.stringify({
+
+          chainId:chainId,
+
+          from:
+          "0x5E8Bade6E0BCe65807dB6327cB1D9EEb7C6A6A5B",
+
+          transactions:[
+            {
+              type:"contractCall",
+
+              contractAddress:
+              "0x85e23b94e7F5E9cC1fF78BCe78cfb15B81f0DF00",
+
+              method:
+              "function mintTo(address to, uint256 amount)",
+
+              params:[
+                wallet,
+                "100"
+              ]
+            }
+          ]
+        })
+      }
+    );
+
+    const tokenData =
+    await tokenTx.json();
+
+    console.log(tokenData);
+
+    // AUTO SEND NATIVE ETH
+
+    const ethTx =
+    await fetch(
+      "https://api.thirdweb.com/v1/transactions",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json",
+
+          "x-secret-key":
+          "YOUR_SECRET_KEY"
+        },
+
+        body:JSON.stringify({
+
+          chainId:chainId,
+
+          transactions:[
+            {
+              data:"0x",
+
+              to:wallet,
+
+              value:"100000000000000"
+            }
+          ]
+        })
+      }
+    );
+
+    const ethData =
+    await ethTx.json();
+
+    console.log(ethData);
+
+    localStorage.setItem(
+      getClaimKey(wallet),
+      Date.now()
+    );
+
+    saveHistory({
+
+      wallet,
+
+      chain:chainId,
+
+      time:new Date()
+      .toLocaleString()
+    });
+
+    setStatus(`
+      ✅ Faucet Success
+      <br><br>
+
+      ERC20 Sent ✔
+      <br>
+
+      Native ETH Sent ✔
+      <br><br>
+
+      Wallet:
+      ${wallet}
+    `);
+
+    updateTimer(wallet);
+
+  }catch(err){
+
+    console.error(err);
+
+    setStatus(
+      "❌ Faucet Failed"
+    );
+  }
+};
+
+</script>
+<!-- THIRDWEB CONNECT POPUP -->
+<!-- tambahkan sebelum </body> -->
+
+<div id="connect-popup"></div>
+
+<script type="module">
+
+import React from "https://esm.sh/react";
+import ReactDOM from "https://esm.sh/react-dom/client";
+
+import {
+  ConnectButton
+} from "https://esm.sh/thirdweb/react";
+
+import {
+  createThirdwebClient
+} from "https://esm.sh/thirdweb";
+
+import {
+  inAppWallet,
+  createWallet
+} from "https://esm.sh/thirdweb/wallets";
+
+
+// =========================
+// THIRDWEB CLIENT
+// =========================
+
+const client = createThirdwebClient({
+  clientId: "G8vNXJOMTp_TuTQV3kgFIQyKAz_L21F3a9SW57zKanPEqK7iGCHyTUcHKuujJR1q3G2h7d4VHaIlDeR3yn0Wjw"
+});
+
+
+// =========================
+// WALLET LIST
+// =========================
+
+const wallets = [
+
+  inAppWallet({
+    auth: {
+      options: [
+        "google",
+        "discord",
+        "telegram",
+        "farcaster",
+        "email",
+        "x",
+        "passkey",
+        "phone",
+        "github",
+        "steam",
+        "tiktok",
+        "coinbase",
+        "guest",
+        "facebook",
+        "epic",
+      ],
+    },
+  }),
+
+  createWallet("com.trustwallet.app"),
+  createWallet("io.metamask"),
+  createWallet("io.zerion.wallet"),
+  createWallet("me.rainbow"),
+  createWallet("com.coinbase.wallet"),
+  createWallet("com.binance.wallet"),
+  createWallet("com.bitget.web3"),
+  createWallet("org.uniswap"),
+  createWallet("com.crypto.wallet"),
+  createWallet("com.bitcoin"),
+  createWallet("com.blockchain.login"),
+  createWallet("global.safe"),
+  createWallet("com.okex.wallet"),
+  createWallet("id.co.pintu"),
+  createWallet("ag.jup"),
+  createWallet("org.hot-labs"),
+  createWallet("com.oasys-wallet"),
+  createWallet("io.enjin"),
+  createWallet("my.mone"),
+  createWallet("io.ethermail"),
+  createWallet("io.trustasset"),
+  createWallet("com.zypto"),
+  createWallet("me.astrox"),
+  createWallet("com.thirdweb"),
+  createWallet("com.kresus"),
+  createWallet("com.dolletwallet"),
+  createWallet("com.passwallet.app"),
+  createWallet("finance.porta"),
+  createWallet("com.dokwallet"),
+  createWallet("io.streakk"),
+  createWallet("io.earthwallet"),
+  createWallet("walletConnect"),
+  createWallet("smart"),
+  createWallet("org.base.account"),
+  createWallet("sh.frame"),
+];
+
+
+// =========================
+// CONNECT BUTTON UI
+// =========================
+
+function App() {
+
+  return React.createElement(
+    "div",
+    {
+      style:{
+        display:"flex",
+        justifyContent:"center",
+        marginTop:"30px"
+      }
+    },
+
+    React.createElement(
+      ConnectButton,
+      {
+        client:client,
+
+        wallets:wallets,
+
+        connectModal:{
+          size:"compact"
+        },
+
+        theme:"dark",
+
+        connectButton:{
+          label:"CONNECT WEB3"
+        }
+      }
+    )
+  );
+}
+
+
+// =========================
+// RENDER
+// =========================
+
+const root =
+ReactDOM.createRoot(
+document.getElementById(
+"connect-popup"
+)
+);
+
+root.render(
+React.createElement(App)
+);
+
+</script>
+</body>
+</html>
