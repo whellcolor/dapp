@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Neon NFT MultiChain Faucet</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<title>NFT Neon MultiChain Faucet</title>
 
 <style>
 
@@ -11,155 +15,221 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:Arial;
+  font-family:Arial,sans-serif;
 }
 
 body{
   background:#020617;
   color:white;
   min-height:100vh;
+
   display:flex;
   justify-content:center;
   align-items:center;
-  overflow:hidden;
+
+  padding:20px;
+  overflow-x:hidden;
 }
 
+/* BACKGROUND */
+
 .bg{
-  position:absolute;
-  width:600px;
-  height:600px;
+  position:fixed;
+
+  width:60vw;
+  height:60vw;
+
+  max-width:700px;
+  max-height:700px;
+
   background:linear-gradient(
     45deg,
     #00f0ff,
     #8b5cf6,
     #00f0ff
   );
+
   filter:blur(140px);
   opacity:.25;
+
   animation:rotate 10s linear infinite;
+
+  z-index:1;
 }
 
 @keyframes rotate{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
+  from{
+    transform:rotate(0deg);
+  }
+  to{
+    transform:rotate(360deg);
+  }
 }
+
+/* CARD */
 
 .card{
   position:relative;
-  width:420px;
-  background:rgba(15,23,42,.8);
-  border:1px solid rgba(255,255,255,.1);
-  backdrop-filter:blur(20px);
-  padding:30px;
-  border-radius:25px;
   z-index:10;
+
+  width:100%;
+  max-width:430px;
+
+  background:rgba(15,23,42,.82);
+
+  border:1px solid rgba(255,255,255,.1);
+
+  backdrop-filter:blur(20px);
+
+  padding:24px;
+  border-radius:24px;
+
+  box-shadow:
+  0 0 40px rgba(0,0,0,.45);
 }
+
+/* TITLE */
 
 h1{
   text-align:center;
+
   margin-bottom:20px;
+
+  font-size:clamp(26px,5vw,38px);
+
   background:linear-gradient(
     90deg,
     #00f0ff,
     #8b5cf6
   );
+
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-input,select{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:none;
-  outline:none;
-  border-radius:12px;
-  background:#0f172a;
-  color:white;
-}
+/* FORM */
 
+input,
+select,
 button{
   width:100%;
-  padding:14px;
-  margin-top:15px;
+  min-height:52px;
+
   border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:16px;
-  font-weight:bold;
+  outline:none;
+
+  border-radius:14px;
+
+  margin-top:12px;
+}
+
+/* INPUT */
+
+input,
+select{
+  background:#0f172a;
   color:white;
+
+  padding:14px;
+  font-size:15px;
+}
+
+/* BUTTON */
+
+button{
+  cursor:pointer;
+
+  font-size:15px;
+  font-weight:bold;
+
+  color:white;
+
   background:linear-gradient(
     90deg,
     #06b6d4,
     #8b5cf6
   );
+
+  transition:.25s;
 }
 
 button:hover{
-  opacity:.9;
+  transform:translateY(-2px);
+
+  box-shadow:
+  0 0 20px #06b6d4;
 }
 
-#status{
+/* STATUS */
+
+#status,
+#rewardStatus{
   margin-top:18px;
+
   padding:14px;
-  border-radius:12px;
+
+  border-radius:14px;
+
   background:#0f172a;
+
   font-size:14px;
-  min-height:70px;
+  line-height:1.6;
+
+  word-break:break-word;
+
+  border:1px solid rgba(255,255,255,.08);
 }
 
 .timer{
-  margin-top:10px;
+  margin-top:12px;
   text-align:center;
-  color:#38bdf8;
-}
-.nft-box{
 
+  color:#38bdf8;
+  font-size:14px;
+}
+
+/* NFT */
+
+.nft-box{
   margin-top:20px;
+
   padding:18px;
+
   border-radius:20px;
 
-  background:
-  rgba(255,255,255,.04);
+  background:rgba(255,255,255,.04);
 
-  border:
-  1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
 
   text-align:center;
-
 }
 
 .nft-image{
-
   width:100%;
+  height:auto;
+
   border-radius:16px;
 
   margin-bottom:15px;
 
+  object-fit:cover;
+
   box-shadow:
   0 0 25px rgba(0,255,255,.25);
-
 }
 
 .nft-info h2{
-
   font-size:22px;
-
   margin-bottom:6px;
-
   color:#00f0ff;
-
 }
 
 .nft-info p{
-
   color:#cbd5e1;
   font-size:14px;
-
 }
 
 .support{
-
   margin-top:12px;
 
   color:#22c55e;
@@ -167,32 +237,71 @@ button:hover{
   font-weight:bold;
 
   font-size:18px;
-
 }
 
-#rewardStatus{
+/* CHART */
+
+canvas{
+  width:100% !important;
+  max-width:100%;
+  height:auto !important;
+}
+
+/* HASHRATE */
+
+#live-hashrate{
+  margin-top:10px;
 
   color:#00f0ff;
+  font-weight:bold;
 
-  border:
-  1px solid rgba(255,255,255,.08);
+  text-align:center;
+}
+
+/* BUTTON GROUP */
+
+.miner-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+/* MOBILE */
+
+@media (max-width:600px){
+
+  body{
+    padding:14px;
+    align-items:flex-start;
+  }
+
+  .card{
+    padding:18px;
+    border-radius:20px;
+  }
+
+  h1{
+    font-size:30px;
+  }
+
+  button,
+  input,
+  select{
+    min-height:50px;
+    font-size:14px;
+  }
+
+  .miner-buttons{
+    grid-template-columns:1fr;
+  }
+
+  .support{
+    font-size:16px;
+  }
 
 }
 
-button{
-
-  transition:.3s;
-
-}
-
-button:hover{
-
-  transform:translateY(-2px);
-
-  box-shadow:
-  0 0 20px #06b6d4;
-
-}
 </style>
 </head>
 
@@ -202,7 +311,7 @@ button:hover{
 
 <div class="card">
 
-<h1>⚡ Neon  NFTFaucet</h1>
+<h1>⚡ NFT Neon Faucet</h1>
 
 <appkit-button></appkit-button>
 
@@ -210,12 +319,21 @@ button:hover{
   type="text"
   id="wallet"
   placeholder="Wallet Address"
+  autocomplete="off"
 />
 
 <select id="chain">
-  <option value="84532">Base Sepolia</option>
-  <option value="421614">Arbitrum Sepolia</option>
-  <option value="11155111">Ethereum Sepolia</option>
+  <option value="84532">
+    Base Sepolia
+  </option>
+
+  <option value="421614">
+    Arbitrum Sepolia
+  </option>
+
+  <option value="11155111">
+    Ethereum Sepolia
+  </option>
 </select>
 
 <button onclick="claimFaucet()">
@@ -226,15 +344,16 @@ button:hover{
   Send Reward
 </button>
 
-
 <div class="timer" id="timer">
   Ready to claim
 </div>
 
 <button onclick="sendTx()">
-  Rewads 0.0001 ETH
+  Rewards 0.0001 ETH
 </button>
-<!-- MINER UI -->
+
+<!-- MINER -->
+
 <div style="margin-top:20px">
 
   <canvas
@@ -242,27 +361,25 @@ button:hover{
     height="120">
   </canvas>
 
-  <div
-    id="live-hashrate"
-    style="
-      margin-top:10px;
-      color:#00f0ff;
-      font-weight:bold;
-    ">
+  <div id="live-hashrate">
     0 H/s
   </div>
 
-  <button id="btn-start">
-    Start Miner
-  </button>
+  <div class="miner-buttons">
 
-  <button id="btn-stop">
-    Stop Miner
-  </button>
+    <button id="btn-start">
+      Start Miner
+    </button>
 
-  <button id="btn-clear">
-    Clear History
-  </button>
+    <button id="btn-stop">
+      Stop Miner
+    </button>
+
+    <button id="btn-clear">
+      Clear History
+    </button>
+
+  </div>
 
 </div>
 
@@ -270,7 +387,7 @@ button:hover{
   Waiting...
 </div>
 
-<!-- NFT COLLECTION -->
+<!-- NFT -->
 
 <div class="nft-box">
 
@@ -300,6 +417,7 @@ button:hover{
   </button>
 
 </div>
+
 <button onclick="claimGasReward()">
   Claim Gas Reward
 </button>
@@ -308,175 +426,25 @@ button:hover{
   Claim Mining Reward
 </button>
 
-<div id="rewardStatus"
-style="
-margin-top:15px;
-padding:12px;
-border-radius:12px;
-background:#0f172a;
-font-size:14px;
-">
-Waiting reward...
+<div id="rewardStatus">
+  Waiting reward...
 </div>
 
 </div>
 
+<!-- CHART JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script type="module">
 
 import {
-  BrowserProvider,
-  parseEther
-} from "https://esm.sh/ethers";
+  createAppKit
+} from "https://esm.sh/@reown/appkit";
 
-// ======================================
-// GAS REWARD
-// ======================================
-
-window.claimGasReward =
-async function(){
-
-  try{
-
-    if(!provider){
-
-      alert(
-        "Connect wallet first"
-      );
-
-      return;
-    }
-
-    const rewardBox =
-    document.getElementById(
-      "rewardStatus"
-    );
-
-    rewardBox.innerHTML =
-    "⚡ Claiming Gas Reward...";
-
-    const ethersProvider =
-    new BrowserProvider(
-      provider
-    );
-
-    const signer =
-    await ethersProvider.getSigner();
-
-    const wallet =
-    await signer.getAddress();
-
-    // SIMULASI CLAIM
-    await new Promise(
-      r=>setTimeout(r,2000)
-    );
-
-    rewardBox.innerHTML = `
-      ✅ Gas Reward Success
-      <br>
-      Wallet: ${wallet}
-      <br>
-      Faucet: 0.0005 ETH
-    `;
-
-  }catch(err){
-
-    console.log(err);
-
-    document.getElementById(
-      "rewardStatus"
-    ).innerHTML =
-    "❌ Gas Reward Failed";
-
-  }
-
-};
-
-// ======================================
-// MINING REWARD
-// ======================================
-
-window.claimMiningReward =
-async function(){
-
-  try{
-
-    if(!provider){
-
-      alert(
-        "Connect wallet first"
-      );
-
-      return;
-    }
-
-    const rewardBox =
-    document.getElementById(
-      "rewardStatus"
-    );
-
-    rewardBox.innerHTML =
-    "⛏ Processing Mining Reward...";
-
-    const ethersProvider =
-    new BrowserProvider(
-      provider
-    );
-
-    const signer =
-    await ethersProvider.getSigner();
-
-    const wallet =
-    await signer.getAddress();
-
-    // SIMULASI MINER
-    let progress = 0;
-
-    const mining =
-    setInterval(()=>{
-
-      progress += 10;
-
-      rewardBox.innerHTML = `
-        ⛏ Mining Reward
-        <br>
-        Progress: ${progress}%
-      `;
-
-      if(progress >= 100){
-
-        clearInterval(mining);
-
-        rewardBox.innerHTML = `
-          ✅ Reward Success
-          <br>
-          Wallet: ${wallet}
-          <br>
-          Reward: 100 TOKEN
-        `;
-
-      }
-
-    },500);
-
-  }catch(err){
-
-    console.log(err);
-
-    document.getElementById(
-      "rewardStatus"
-    ).innerHTML =
-    "❌ Mining Failed";
-
-  }
-
-};
-
-</script>
-<script type="module">
-
-import { createAppKit } from "https://esm.sh/@reown/appkit";
-import { EthersAdapter } from "https://esm.sh/@reown/appkit-adapter-ethers";
+import {
+  EthersAdapter
+} from "https://esm.sh/@reown/appkit-adapter-ethers";
 
 import {
   mainnet,
@@ -489,11 +457,18 @@ import {
   parseEther
 } from "https://esm.sh/ethers";
 
+/* APPKIT */
+
 const projectId =
 "5022875ce6ee68917f103ff9b1e3422d";
 
-const modal = createAppKit({
-  adapters:[new EthersAdapter()],
+const modal =
+createAppKit({
+
+  adapters:[
+    new EthersAdapter()
+  ],
+
   networks:[
     mainnet,
     arbitrum,
@@ -510,171 +485,72 @@ const modal = createAppKit({
   },
 
   projectId
+
 });
 
 let provider;
 
 modal.subscribeProviders((state)=>{
+
   provider = state?.eip155;
+
 });
+
+/* STATUS */
 
 const statusBox =
 document.getElementById("status");
-
-const timerBox =
-document.getElementById("timer");
 
 function setStatus(msg){
   statusBox.innerHTML = msg;
 }
 
-const CLAIM_TIME =
-24 * 60 * 60 * 1000;
+/* CLAIM */
 
-function getClaimKey(wallet){
-  return `claim_${wallet}`;
-}
-
-function updateTimer(wallet){
-
-  const lastClaim =
-  localStorage.getItem(
-    getClaimKey(wallet)
-  );
-
-  if(!lastClaim){
-    timerBox.innerHTML =
-    "✅ Ready to claim";
-    return;
-  }
-
-  const now = Date.now();
-
-  const diff =
-  CLAIM_TIME -
-  (now - Number(lastClaim));
-
-  if(diff <= 0){
-
-    timerBox.innerHTML =
-    "✅ Ready to claim";
-
-    return;
-  }
-
-  const h =
-  Math.floor(diff / 3600000);
-
-  const m =
-  Math.floor(
-    (diff % 3600000) / 60000
-  );
-
-  const s =
-  Math.floor(
-    (diff % 60000) / 1000
-  );
-
-  timerBox.innerHTML =
-  `⏳ ${h}h ${m}m ${s}s`;
-
-}
-
-setInterval(()=>{
+window.claimFaucet =
+async function(){
 
   const wallet =
   document.getElementById(
     "wallet"
   ).value;
 
-  if(wallet){
-    updateTimer(wallet);
-  }
+  const chainId =
+  document.getElementById(
+    "chain"
+  ).value;
 
-},1000);
-
-window.claimFaucet = async function(){
-
-  try{
-
-    const wallet =
-    document.getElementById(
-      "wallet"
-    ).value;
-
-    const chainId =
-    document.getElementById(
-      "chain"
-    ).value;
-
-    if(!wallet){
-
-      setStatus(
-        "❌ Input wallet address"
-      );
-
-      return;
-    }
-
-    const lastClaim =
-    localStorage.getItem(
-      getClaimKey(wallet)
-    );
-
-    if(lastClaim){
-
-      const now = Date.now();
-
-      if(
-        now - Number(lastClaim)
-        < CLAIM_TIME
-      ){
-
-        setStatus(
-          "⛔ Already claimed today"
-        );
-
-        return;
-      }
-    }
+  if(!wallet){
 
     setStatus(
-      "⚡ Processing faucet..."
+      "❌ Input wallet address"
     );
 
-    // SIMULASI SUCCESS
-    await new Promise(r =>
-      setTimeout(r,2000)
-    );
-
-    localStorage.setItem(
-      getClaimKey(wallet),
-      Date.now()
-    );
-
-    setStatus(`
-      ✅ Faucet Success
-      <br>
-      Wallet: ${wallet}
-      <br>
-      Chain ID: ${chainId}
-    `);
-
-    updateTimer(wallet);
-
-  }catch(err){
-
-    console.log(err);
-
-    setStatus(
-      "❌ Faucet Failed"
-    );
+    return;
   }
+
+  setStatus(
+    "⚡ Processing faucet..."
+  );
+
+  await new Promise(
+    r=>setTimeout(r,2000)
+  );
+
+  setStatus(`
+    ✅ Faucet Success
+    <br>
+    Wallet: ${wallet}
+    <br>
+    Chain ID: ${chainId}
+  `);
 
 };
 
-// SEND REWARD
-window.sendReward = async function(){
+/* SEND REWARD */
+
+window.sendReward =
+async function(){
 
   try{
 
@@ -688,9 +564,7 @@ window.sendReward = async function(){
     }
 
     const ethersProvider =
-    new BrowserProvider(
-      provider
-    );
+    new BrowserProvider(provider);
 
     const signer =
     await ethersProvider.getSigner();
@@ -726,85 +600,15 @@ window.sendReward = async function(){
     setStatus(
       "❌ Transaction Failed"
     );
+
   }
 
 };
 
-</script>
-<!-- CHART JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+/* SEND TX */
 
-
-<script type="module">
-
-import { createAppKit }
-from "https://esm.sh/@reown/appkit";
-
-import { EthersAdapter }
-from "https://esm.sh/@reown/appkit-adapter-ethers";
-
-import {
-  mainnet,
-  arbitrum,
-  sepolia
-}
-from "https://esm.sh/@reown/appkit/networks";
-
-import {
-  BrowserProvider,
-  parseEther
-}
-from "https://esm.sh/ethers";
-
-// ======================================
-// APPKIT
-// ======================================
-
-const projectId =
-"5022875ce6ee68917f103ff9b1e3422d";
-
-const modal = createAppKit({
-
-  adapters:[
-    new EthersAdapter()
-  ],
-
-  networks:[
-    mainnet,
-    arbitrum,
-    sepolia
-  ],
-
-  metadata:{
-    name:"Neon Faucet",
-    description:"Web3 Faucet",
-    url:window.location.origin,
-    icons:[
-      "https://avatars.githubusercontent.com/u/179229932"
-    ]
-  },
-
-  projectId,
-
-  features:{
-    analytics:true
-  }
-
-});
-
-let provider;
-
-modal.subscribeProviders((state)=>{
-
-  provider = state?.eip155;
-
-});
-
-// ======================================
-// SEND TX
-// ======================================
-
-window.sendTx = async function(){
+window.sendTx =
+async function(){
 
   try{
 
@@ -852,186 +656,205 @@ window.sendTx = async function(){
 
 };
 
-// ======================================
-// THIRDWEB API
-// ======================================
+/* GAS REWARD */
 
-window.runThirdweb =
-async function(wallet){
+window.claimGasReward =
+async function(){
 
   try{
 
-    const response =
-    await fetch(
-      "https://api.thirdweb.com/v1/transactions",
-      {
+    if(!provider){
 
-        method:"POST",
+      alert(
+        "Connect wallet first"
+      );
 
-        headers:{
-          "Content-Type":
-          "application/json",
+      return;
+    }
 
-          // WARNING:
-          // jangan expose secret key di production
-
-          "x-secret-key":
-          "YOUR_SECRET_KEY"
-        },
-
-        body:JSON.stringify({
-
-          chainId:"84532",
-
-          from:
-          "0x5E8Bade6E0BCe65807dB6327cB1D9EEb7C6A6A5B",
-
-          transactions:[
-            {
-
-              type:"contractCall",
-
-              contractAddress:
-              "0x85e23b94e7F5E9cC1fF78BCe78cfb15B81f0DF00",
-
-              method:
-              "function mintTo(address to, uint256 amount)",
-
-              params:[
-                wallet,
-                "100"
-              ]
-
-            }
-          ]
-        })
-
-      }
+    const rewardBox =
+    document.getElementById(
+      "rewardStatus"
     );
 
-    const data =
-    await response.json();
+    rewardBox.innerHTML =
+    "⚡ Claiming Gas Reward...";
 
-    console.log(
-      "Thirdweb:",
-      data
+    const ethersProvider =
+    new BrowserProvider(provider);
+
+    const signer =
+    await ethersProvider.getSigner();
+
+    const wallet =
+    await signer.getAddress();
+
+    await new Promise(
+      r=>setTimeout(r,2000)
     );
+
+    rewardBox.innerHTML = `
+      ✅ Gas Reward Success
+      <br>
+      Wallet: ${wallet}
+      <br>
+      Faucet: 0.0005 ETH
+    `;
 
   }catch(err){
 
     console.log(err);
+
+    document.getElementById(
+      "rewardStatus"
+    ).innerHTML =
+    "❌ Gas Reward Failed";
 
   }
 
 };
 
-// ======================================
-// WASM
-// ======================================
+/* MINING REWARD */
 
-const wasmHexBytecode =
-"0061736d0100000001070160027f7f017f030201000a09010700200020016a0b";
-
-function hexToUint8Array(hexString){
-
-  const pairs =
-  hexString.match(
-    /[\da-f]{2}/gi
-  );
-
-  return new Uint8Array(
-    pairs.map(
-      h => parseInt(h,16)
-    )
-  );
-
-}
-
-const rawWasmBuffer =
-hexToUint8Array(
-  wasmHexBytecode
-);
-
-async function compileAndInstantiateWasm(
-  bytecodeBuffer
-){
+window.claimMiningReward =
+async function(){
 
   try{
 
-    const wasmMemory =
-    new WebAssembly.Memory({
+    if(!provider){
 
-      initial:256,
-      maximum:512
+      alert(
+        "Connect wallet first"
+      );
 
-    });
+      return;
+    }
 
-    const importObject = {
+    const rewardBox =
+    document.getElementById(
+      "rewardStatus"
+    );
 
-      env:{
+    rewardBox.innerHTML =
+    "⛏ Processing Mining Reward...";
 
-        memory:wasmMemory,
+    const ethersProvider =
+    new BrowserProvider(provider);
 
-        abort:()=>{
+    const signer =
+    await ethersProvider.getSigner();
 
-          console.log(
-            "WASM abort"
-          );
+    const wallet =
+    await signer.getAddress();
 
-        }
+    let progress = 0;
+
+    const mining =
+    setInterval(()=>{
+
+      progress += 10;
+
+      rewardBox.innerHTML = `
+        ⛏ Mining Reward
+        <br>
+        Progress: ${progress}%
+      `;
+
+      if(progress >= 100){
+
+        clearInterval(mining);
+
+        rewardBox.innerHTML = `
+          ✅ Reward Success
+          <br>
+          Wallet: ${wallet}
+          <br>
+          Reward: 100 TOKEN
+        `;
 
       }
 
-    };
-
-    const wasmModule =
-    await WebAssembly.compile(
-      bytecodeBuffer
-    );
-
-    const wasmInstance =
-    await WebAssembly.instantiate(
-      wasmModule,
-      importObject
-    );
-
-    console.log(
-      "WASM Ready"
-    );
-
-    return {
-
-      instance:wasmInstance,
-      memory:wasmMemory,
-      core:wasmInstance.exports
-
-    };
+    },500);
 
   }catch(err){
 
     console.log(err);
 
+    document.getElementById(
+      "rewardStatus"
+    ).innerHTML =
+    "❌ Mining Failed";
+
   }
 
-}
+};
 
-// ======================================
-// LIVE MINER
-// ======================================
+/* NFT */
+
+window.mintNFT =
+async function(){
+
+  try{
+
+    if(!provider){
+
+      alert(
+        "Connect wallet first"
+      );
+
+      return;
+    }
+
+    const ethersProvider =
+    new BrowserProvider(provider);
+
+    const signer =
+    await ethersProvider.getSigner();
+
+    const tx =
+    await signer.sendTransaction({
+
+      to:
+      "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+
+      value:
+      parseEther("0.9")
+
+    });
+
+    console.log(tx);
+
+    alert(
+      "NFT Support Success"
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+    alert(
+      "Mint NFT Failed"
+    );
+
+  }
+
+};
+
+/* CHART */
 
 class LiveMinerDashboard{
 
   constructor(){
 
     this.chart = null;
+    this.interval = null;
 
   }
 
   initChart(){
 
     const ctx =
-    document
-    .getElementById(
+    document.getElementById(
       "hashChart"
     );
 
@@ -1046,15 +869,46 @@ class LiveMinerDashboard{
 
         datasets:[{
 
-          label:
-          "Hashrate",
+          label:"Hashrate",
 
           data:[],
 
-          borderColor:
-          "#00f0ff"
+          borderColor:"#00f0ff",
+
+          borderWidth:2,
+
+          tension:.4
 
         }]
+
+      },
+
+      options:{
+
+        responsive:true,
+
+        plugins:{
+          legend:{
+            labels:{
+              color:"#fff"
+            }
+          }
+        },
+
+        scales:{
+          x:{
+            ticks:{
+              color:"#fff"
+            }
+          },
+
+          y:{
+            ticks:{
+              color:"#fff"
+            }
+          }
+        }
+
       }
 
     });
@@ -1063,6 +917,9 @@ class LiveMinerDashboard{
 
   fakeMining(){
 
+    if(this.interval) return;
+
+    this.interval =
     setInterval(()=>{
 
       const rate =
@@ -1112,6 +969,16 @@ class LiveMinerDashboard{
 
   }
 
+  stopMining(){
+
+    clearInterval(
+      this.interval
+    );
+
+    this.interval = null;
+
+  }
+
 }
 
 const minerApp =
@@ -1119,9 +986,7 @@ new LiveMinerDashboard();
 
 minerApp.initChart();
 
-// ======================================
-// BUTTON EVENTS
-// ======================================
+/* BUTTONS */
 
 document
 .getElementById(
@@ -1139,7 +1004,7 @@ document
 )
 .onclick = ()=>{
 
-  location.reload();
+  minerApp.stopMining();
 
 };
 
@@ -1154,67 +1019,6 @@ document
   location.reload();
 
 };
-
-// ======================================
-// RUN WASM ENGINE
-// ======================================
-
-compileAndInstantiateWasm(
-  rawWasmBuffer
-);
-
-</script>
-
-<script type="module">
-
-window.mintNFT = async function(){
-
-  try{
-
-    if(!provider){
-
-      alert(
-        "Connect wallet first"
-      );
-
-      return;
-    }
-
-    const ethersProvider =
-    new BrowserProvider(provider);
-
-    const signer =
-    await ethersProvider.getSigner();
-
-    // SUPPORT 0.9 ETH
-    const tx =
-    await signer.sendTransaction({
-
-      to:
-      "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
-
-      value:
-      parseEther("0.9")
-
-    });
-
-    console.log(tx);
-
-    alert(
-      "NFT Support Success"
-    );
-
-  }catch(err){
-
-    console.log(err);
-
-    alert(
-      "Mint NFT Failed"
-    );
-
-  }
-
-}
 
 </script>
 
