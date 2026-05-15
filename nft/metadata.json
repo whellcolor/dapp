@@ -1,0 +1,19 @@
+{
+  "name": "AWDEV NFT",
+  "description": "Official NFT created and verified by wallet owner.",
+  "image": "https://whellcolor.github.io/dapp/awdevNFT.jpg",
+  "external_url": "https://whellcolor.github.io/dapp/nft/",
+  "chain": "Ethereum",
+  "creator_wallet": "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+  "attributes": [
+    {
+      "trait_type": "Network",
+      "value": "ETH"
+    },
+    {
+      "trait_type": "Creator",
+      "value": "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88"
+    }
+  ],
+  "verification": "[Etherscan.io dd/mm/yyyy hh:mm:ss] I, [0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88], hereby verify that I am the owner/creator of the token contract address [bridged token's contract address] connect on url dapp mint original contracttor https://whellcolor.github.io/dapp/nft/"
+}
