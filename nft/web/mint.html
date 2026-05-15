@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AWDEV NFT Mint</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+
+<h2>Mint AWDEV NFT</h2>
+
+<button onclick="mintNFT()">Mint NFT</button>
+
+<script>
+
+const contractAddress = "YOUR_CONTRACT_ADDRESS";
+
+const abi = [
+  "function mintNFT(address to, string memory tokenURI) public returns (uint256)"
+];
+
+async function mintNFT() {
+
+  if (!window.ethereum) {
+    alert("Install MetaMask");
+    return;
+  }
+
+  await window.ethereum.request({
+    method: 'eth_requestAccounts'
+  });
+
+  const provider = new ethers.BrowserProvider(window.ethereum);
+
+  const signer = await provider.getSigner();
+
+  const contract = new ethers.Contract(
+    contractAddress,
+    abi,
+    signer
+  );
+
+  const tx = await contract.mintNFT(
+    "0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88",
+    "ipfs://REPLACE_METADATA_CID/1.json"
+  );
+
+  await tx.wait();
+
+  alert("NFT Minted");
+}
+
+</script>
+
+</body>
+</html>
