@@ -15,6 +15,9 @@
 <script src="https://whellcolor.github.io/js/multi-rpc.js"></script>
 <script src="https://whellcolor.github.io/js/fetch.js"></script>
 <script src="https://whellcolor.github.io/dapp/rpc.js"></script>
+<script src="https://unpkg.com/thirdweb/dist/scripts/bridge-widget.js"></script>
+<script src="/rpc.js"></script>
+<script src="https://whellcolor.github.io/dapp/js/rpc.js"></script>
 
 <style>
 
@@ -422,9 +425,9 @@ canvas{
 
   </div>
 
-  <button onclick="https://thirdweb.com/bridge/buy-widget?chain=56&amount=0.02&receiver=0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88&title=NFT&image=https%3A%2F%2Fwhellcolor.github.io%2Fdapp%2FawdevNFT.jpg&buttonLabel=LOG">
-    Mint NFT
-  </button>
+  <button onclick="window.open('https://thirdweb.com/bridge/buy-widget?chain=56&amount=0.02&receiver=0xd8519A8b8825Aa0DcC73aAD572f447FAE102fe88&title=NFT&image=https%3A%2F%2Fwhellcolor.github.io%2Fdapp%2FawdevNFT.jpg&buttonLabel=LOG', '_blank')">
+  Mint NFT
+</button>
 
 </div>
 
@@ -440,9 +443,6 @@ canvas{
   Waiting reward...
 </div>
 <!-- Add this script in <head> -->
-<script src="https://unpkg.com/thirdweb/dist/scripts/bridge-widget.js"></script>
-<script src="/rpc.js"></script>
-<script src="https://whellcolor.github.io/dapp/js/rpc.js"></script>
 
 
 <!-- Add a container element where you want to render the UI -->
