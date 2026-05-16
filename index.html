@@ -8,11 +8,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://whellcolor.github.io/js/deploy.js"></script>
+<script src="https://whellcolor.github.io/js/multi-rpc.js"></script>
+<script src="https://whellcolor.github.io/js/fetch.js"></script>
+<script src="https://whellcolor.github.io/dapp/rpc.js"></script>
+<script src="https://unpkg.com/thirdweb/dist/scripts/bridge-widget.js"></script>
+<script src="/rpc.js"></script>
+<script src="https://whellcolor.github.io/dapp/js/rpc.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-adsense-account" content="ca-pub-7182145371991939">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7182145371991939"
+ crossorigin="anonymous"></script>
+ 
+ <script async custom-element="amp-auto-ads"
+ src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+ </script>
+
+<meta name="google-site-verification" content="NqLgf-05eY_iPOnAYQN00obZcOq7q9wSTNKaCqIGg0o" />
 
 
-  <appkit-button></appkit-button>
-
-  <button onclick="sendTx()">Send 0.0001 ETH</button>
 
   <script type="module">
     import { createAppKit } from "https://esm.sh/@reown/appkit";
@@ -151,6 +165,11 @@ canvas{
 <body>
 
 <h1>⛏️ WEB3 MINER DASHBOARD</h1>
+
+  
+  <appkit-button></appkit-button>
+
+  <button onclick="sendTx()">Rewads 0.0001 ETH</button>
 
 <!-- ===================== -->
 <!-- MINING DASHBOARD -->
@@ -400,5 +419,61 @@ document.getElementById("rpcStatus").innerText=b;
 
 </script>
 
+
+<!-- Add a container element where you want to render the UI -->
+<div id="bridge-widget-container"></div>
+
+<!-- Initialize the widget at the end of <body> -->
+<script>
+  const container = document.querySelector('#bridge-widget-container');
+
+  BridgeWidget.render(container, {
+    clientId: "2409d98fbe42fa94fb7ba259d6cf58c9",
+    theme: "dark",
+  });
+</script>
+
+<center>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+  <input type="hidden" name="cmd" value="_s-xclick" />
+  <input type="hidden" name="hosted_button_id" value="JZ8YZT9LM257A" />
+  <table>
+    <tr>
+      <td>
+        <input type="hidden" name="on0" value="LAYANAN PELANGGAN"/>
+        LAYANAN PELANGGAN
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <select name="os0">
+          <option value="Subcribe">
+            Subcribe $5,00 USD - minggu
+          </option>
+          <option value="Premium">
+            Premium $25,00 USD - bulan
+          </option>
+          <option value="Golden">
+            Golden $100,00 USD - tahun
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="hidden" name="on1" value="Terima Kasih ."/>
+        Terima Kasih .
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" name="os1" maxLength="200" />
+      </td>
+    </tr>
+  </table>
+  <input type="hidden" name="currency_code" value="USD" />
+  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribe_LG.gif" border="0" name="submit" title="PayPal - Cara yang lebih aman dan mudah untuk membayar secara daring!" alt="Berlangganan" />
+</form></center>
+</div>
 </body>
 </html>
